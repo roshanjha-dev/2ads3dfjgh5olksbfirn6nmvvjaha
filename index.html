@@ -2,249 +2,458 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Valentines Page</title>
+<title>Valentines</title>
 
 <style>
-    body {
-        margin: 0;
-        height: 100vh;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        font-family: 'Segoe UI', sans-serif;
-        background: #ffe4ec;
-    }
+body{
+    margin:0;
+    height:100vh;
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-family:'Segoe UI',sans-serif;
+    background:#ffe4ec;
+}
 
-    /* Header */
-    .header {
-        font-size: 64px;
-        font-weight: bold;
-        margin-top: 20px;
-        color: #ff2e63;
-        text-shadow: 0 0 15px rgba(255,0,100,0.6);
-        animation: pulse 2s infinite alternate;
-        z-index: 10;
-    }
+/* Header */
+.header{
+    position:absolute;
+    top:50px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:64px;
+    font-weight:bold;
+    color:#ff2e63;
+    text-shadow:0 0 15px rgba(255,0,100,0.6);
+    animation:pulse 2s infinite alternate;
+    z-index:10;
+}
+@keyframes pulse{
+    from{transform:translateX(-50%) scale(1);}
+    to{transform:translateX(-50%) scale(1.1);}
+}
 
-    @keyframes pulse {
-        from { transform: scale(1); }
-        to { transform: scale(1.1); }
-    }
+/* Floating objects */
+.float{
+    position:absolute;
+    pointer-events:none;
+    animation:floatUp linear infinite;
+    z-index:0;
+}
+@keyframes floatUp{
+    from{transform:translateY(100vh);opacity:1;}
+    to{transform:translateY(-10vh);opacity:0;}
+}
 
-    .center {
-        flex: 1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-    }
+/* Card */
+.box{
+    position:relative;
+    z-index:10;
+    text-align:center;
+    padding:90px 120px;
+    border-radius:24px;
+    background:linear-gradient(145deg,#fff0f5,#ffe4ec);
+    box-shadow:0 20px 40px rgba(255,0,100,0.25);
 
-    /* Floating objects */
-    .float {
-        position: absolute;
-        pointer-events: none;
-        animation: floatUp linear infinite;
-        z-index: 0;
-    }
+    border:3px solid transparent;
+    background-clip:padding-box;
+}
 
-    @keyframes floatUp {
-        from {
-            transform: translateY(100vh) scale(0.8);
-            opacity: 1;
-        }
-        to {
-            transform: translateY(-10vh) scale(1.3);
-            opacity: 0;
-        }
-    }
+.box::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    padding:3px;
+    border-radius:24px;
+    background:linear-gradient(45deg,#ff1a66,#ff8fab,#ff1a66);
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;
+            mask-composite:exclude;
+    pointer-events:none;
+}
 
-    /* Decorated Card */
-    .box {
-        position: relative;
-        z-index: 10;
-        text-align: center;
-        padding: 90px 120px;
-        border-radius: 24px;
-        background: linear-gradient(145deg,#fff0f5,#ffe4ec);
-        backdrop-filter: blur(8px);
-        box-shadow:
-            0 20px 40px rgba(255,0,100,0.25),
-            inset 0 0 15px rgba(255,255,255,0.6);
-        border: 3px solid rgba(255,100,150,0.3);
-    }
+h2{
+    font-size:30px;
+    margin-bottom:45px;
+    color:#d6004c;
+    line-height:1.4;
+}
 
-    .corner {
-        position: absolute;
-        font-size: 28px;
-        color: #ff4d88;
-        animation: floatCorner 3s ease-in-out infinite alternate;
-    }
+button{
+    padding:16px 36px;
+    font-size:18px;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    transition:transform .2s;
+}
+button:hover{ transform:scale(1.1); }
 
-    .tl { top: 12px; left: 18px; }
-    .tr { top: 12px; right: 18px; }
-    .bl { bottom: 12px; left: 18px; }
-    .br { bottom: 12px; right: 18px; }
+.yes{
+    background:linear-gradient(45deg,#ff4d88,#ff1a66);
+    color:white;
+    margin-right:30px;
+}
 
-    @keyframes floatCorner {
-        from { transform: translateY(0px); }
-        to { transform: translateY(-6px); }
-    }
+.no{
+    background:#999;
+    color:white;
+    position:absolute;
+    left:0; top:0;
+    transition:transform .45s cubic-bezier(.25,.8,.25,1);
+}
 
-    h2 {
-        font-size: 30px;
-        margin-bottom: 45px;
-        color: #d6004c;
-        line-height: 1.4;
-    }
+/* Toast */
+.toast{
+    position:absolute;
+    top:-40px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#ff2e63;
+    color:white;
+    padding:10px 18px;
+    border-radius:20px;
+    font-weight:bold;
+    animation:popFade 2.2s ease forwards;
+}
+@keyframes popFade{
+    0%{opacity:0;transform:translate(-50%,10px);}
+    20%{opacity:1;}
+    100%{opacity:0;transform:translate(-50%,-10px);}
+}
 
-    button {
-        padding: 16px 36px;
-        font-size: 18px;
-        border: none;
-        border-radius: 12px;
-        cursor: pointer;
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
+/* Overlay */
+.overlay{
+    position:fixed;
+    inset:0;
+    background:radial-gradient(circle,#ff6fa3,#ff2e63);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    color:white;
+    font-size:64px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 2s;
+    z-index:100;
+}
 
-    button:hover {
-        transform: scale(1.1);
-        box-shadow: 0 6px 14px rgba(0,0,0,0.2);
-    }
+/* Confetti */
+.confetti{
+    position:absolute;
+    width:8px;
+    height:14px;
+    background:red;
+    animation:fall linear forwards;
+}
+@keyframes fall{
+    to{ transform:translateY(110vh) rotate(720deg); }
+}
 
-    .yes {
-        background: linear-gradient(45deg,#ff4d88,#ff1a66);
-        color: white;
-        margin-right: 30px;
-    }
+/* Cat run */
+.catRun{
+    position:absolute;
+    font-size:42px;
+    animation:runCat 10s linear forwards;
+}
+@keyframes runCat{
+    from{ left:-50px; }
+    to{ left:110vw; }
+}
 
-    .no {
-        background: #999;
-        color: white;
-        position: absolute;
-        left: 0;
-        top: 0;
-        transition: transform 0.45s cubic-bezier(.25,.8,.25,1);
-        will-change: transform;
+/* Heart burst */
+.burst{
+    position:absolute;
+    font-size:28px;
+    animation:burst 2s forwards;
+}
+@keyframes burst{
+    to{
+        transform:translate(var(--x),var(--y)) scale(0);
+        opacity:0;
     }
+}
 
-    /* Floating notification */
-    .toast {
-        position: absolute;
-        top: -40px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #ff2e63;
-        color: white;
-        padding: 10px 18px;
-        border-radius: 20px;
-        font-size: 16px;      /* slightly bigger */
-        font-weight: 500;
-        opacity: 0;
-        pointer-events: none;
-        animation: popFade 1.6s ease forwards;
-        box-shadow: 0 6px 14px rgba(0,0,0,0.2);
-    }
+#shayariBox{
+    margin-top:40px;
+    font-size:26px;
+    width:70%;
+    text-align:center;
+    line-height:1.6;
+    opacity:0;
+    transition:opacity 1.2s;
+    color:black;              /* 👈 Added */
+    font-weight:500;
+}
 
-    @keyframes popFade {
-        0%   { opacity: 0; transform: translate(-50%, 10px); }
-        20%  { opacity: 1; transform: translate(-50%, 0); }
-        80%  { opacity: 1; }
-        100% { opacity: 0; transform: translate(-50%, -10px); }
-    }
+/* Roses */
+.rose{
+    position:absolute;
+    font-size:36px;
+    animation:rosePop 1.2s ease forwards;
+}
+@keyframes rosePop{
+    0%{ transform:scale(0); opacity:0; }
+    60%{ transform:scale(1.3); opacity:1; }
+    100%{ transform:scale(1); }
+}
+
+/* Replay button (inherits YES style) */
+/* Replay button entrance animation ONLY */
+#returnBtn{
+    margin-top:30px;
+    opacity:0;
+    transform:scale(0.7);
+    pointer-events:none;
+}
+
+/* When visible */
+#returnBtn.show{
+    opacity:1;
+    transform:scale(1);
+    pointer-events:auto;
+}
 </style>
 </head>
 
 <body>
 
-<div class="header">Haapy Valentines Day ❤️</div>
+<div class="header">Happy Valentine's Day ❤️</div>
 
-<div class="center">
-    <div class="box" id="box">
+<div class="box" id="box">
+<h2>
+Hey Ramy, my kanmani! 💖<br>
+Will you be my valentine??
+</h2>
 
-        <div class="corner tl">❤️</div>
-        <div class="corner tr">❤️</div>
-        <div class="corner bl">❤️</div>
-        <div class="corner br">❤️</div>
-
-        <h2 id="question">
-            Hey Ramy, my darling! 💖<br>
-            Will you be my valentine??
-        </h2>
-
-        <button class="yes" onclick="answerYes()">Yes</button>
-        <button class="no" id="noBtn">No</button>
-
-    </div>
+<button class="yes" id="yesBtn">Yes</button>
+<button class="no" id="noBtn">No</button>
 </div>
 
+<div class="overlay" id="overlay">
+    <div id="loveText">I Love You ❤️</div>
+    <div style="font-size:28px">Forever & Always</div>
+
+    <!-- Shayari container -->
+    <div id="shayariBox"></div>
+    <button id="returnBtn" class="yes">Replay ❤️</button>
+</div>
+
+<audio id="music" loop>
+<source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">
+</audio>
+
 <script>
-    function answerYes() {
-        const q = document.getElementById("question");
+const box=document.getElementById("box");
+const noBtn=document.getElementById("noBtn");
+let x=0, y=0;
 
-        q.innerHTML = "I Love You ❤️";
-        q.style.fontSize = "40px";
-        q.style.color = "#ff0055";
-        q.style.fontWeight = "bold";
-        q.style.animation = "pulse 0.6s ease 3";
-    }
+/* Position No button nicely on load */
+window.addEventListener("load", () => {
+    const yesBtn = document.getElementById("yesBtn");
 
-    // Create floating heart or cat
-    function createFloating() {
-        const el = document.createElement("div");
-        el.className = "float";
+    const yesRect = yesBtn.getBoundingClientRect();
+    const boxRect = box.getBoundingClientRect();
 
-        const isCat = Math.random() < 0.35;
+    // place No to the right of Yes
+    x = yesRect.right - boxRect.left + 20;
+    y = yesRect.top - boxRect.top;
 
-        if (isCat) {
-            el.innerHTML = "🐱";
-        } else {
-            el.innerHTML = "❤️";   // <- RED HEART
+    noBtn.style.transform = `translate(${x}px, ${y}px)`;
+});
+
+/* floating background */
+/* floating background emojis */
+const floats = ["❤️","💖","💘","💕","💞","🌹","✨","🎈","🥰","😍","🐱","🎀"];
+
+setInterval(()=>{
+ let el=document.createElement("div");
+ el.className="float";
+ el.innerHTML=floats[Math.floor(Math.random()*floats.length)];
+ el.style.left=Math.random()*100+"vw";
+ el.style.fontSize=(22+Math.random()*34)+"px";
+ el.style.animationDuration=(5+Math.random()*5)+"s";
+ document.body.appendChild(el);
+ setTimeout(()=>el.remove(),10000);
+},220);
+
+/* toast */
+function toast(){
+ let t=document.createElement("div");
+ t.className="toast";
+ t.innerText="😂😜 Catch me if you can!";
+ box.appendChild(t);
+ setTimeout(()=>t.remove(),2200);
+}
+
+/* escape button */
+noBtn.addEventListener("mouseenter",()=>{
+ toast();
+ let maxX=box.clientWidth-noBtn.clientWidth;
+ let maxY=box.clientHeight-noBtn.clientHeight;
+ x=Math.random()*maxX;
+ y=Math.random()*maxY;
+ noBtn.style.transform=`translate(${x}px,${y}px)`;
+});
+
+/* YES celebration */
+document.getElementById("yesBtn").onclick=(e)=>{
+
+ document.getElementById("music").play();
+
+ // heart burst (longer)
+ const burstEmojis=["💘","💖","💕","💞","✨","🌸","🎉"];
+
+for(let i=0;i<40;i++){
+ let h=document.createElement("div");
+ h.className="burst";
+ h.innerHTML=burstEmojis[Math.floor(Math.random()*burstEmojis.length)];
+ h.style.left=e.clientX+"px";
+ h.style.top=e.clientY+"px";
+ h.style.setProperty("--x",(Math.random()*300-150)+"px");
+ h.style.setProperty("--y",(Math.random()*300-150)+"px");
+ document.body.appendChild(h);
+ setTimeout(()=>h.remove(),2000);
+}
+
+ // confetti rain (longer)
+ for(let i=0;i<200;i++){
+   let c=document.createElement("div");
+   c.className="confetti";
+   c.style.left=Math.random()*100+"vw";
+   c.style.animationDuration=(3+Math.random()*4)+"s";
+   document.body.appendChild(c);
+   setTimeout(()=>c.remove(),8000);
+ }
+
+ // cats celebration (longer)
+ const cats=["🐱","😻","🐈","🐾"];
+
+for(let i=0;i<8;i++){
+ let cat=document.createElement("div");
+ cat.className="catRun";
+ cat.innerHTML=cats[Math.floor(Math.random()*cats.length)];
+ cat.style.top=(50+i*60)+"px";
+ document.body.appendChild(cat);
+}
+
+ document.getElementById("overlay").style.opacity=1;
+  playShayari();
+ };
+
+/* Shayari lines */
+const shayari = [
+"Ramya, you are the quiet thought that stays with me,",
+"Long after the day fades away,",
+"The soft echo of laughter,",
+"That brightens whatever comes my way.",
+"In crowded rooms I search for you, my kanmani,",
+"In silent nights I feel you near,",
+"And in every wish I dare to make,",
+"It’s your voice I long to hear.",
+"If love is measured in moments,",
+"In glances, in time we share,",
+"Then I’ve lived a thousand lifetimes —",
+"Just knowing you are there. 💞"
+];
+
+function playShayari(){
+    const box = document.getElementById("shayariBox");
+    const overlay = document.getElementById("overlay");
+    const music = document.getElementById("music");
+
+    let i = 0;
+
+    // Intro line
+    box.textContent = "💌 A little something for you...";
+    box.style.opacity = 1;
+
+    setTimeout(()=>{
+        box.style.opacity = 0;
+        setTimeout(startPoem,1200);
+    },2600);
+
+
+    function startPoem(){
+
+        function showNext(){
+            if(i >= shayari.length){
+                showRosesAndButton();
+                return;
+            }
+
+            box.textContent = shayari[i];
+            box.style.opacity = 1;
+
+            setTimeout(()=>{
+                box.style.opacity = 0;
+
+                setTimeout(()=>{
+                    i++;
+                    showNext();
+                },1200);
+
+            },2600);
         }
 
-        el.style.left = Math.random() * 100 + "vw";
-        el.style.fontSize = (18 + Math.random() * 30) + "px";
-        el.style.animationDuration = (4 + Math.random() * 5) + "s";
-
-        document.body.appendChild(el);
-        setTimeout(() => el.remove(), 9000);
+        showNext();
     }
 
 
-    setInterval(createFloating, 180);
+    // ⭐ Return to first page
+    function finishSequence(){
 
-    // Smooth NO escape
-    const noBtn = document.getElementById("noBtn");
-    const box = document.getElementById("box");
+        setTimeout(()=>{
 
-    let posX = 200;
-    let posY = 120;
-    noBtn.style.transform = `translate(${posX}px, ${posY}px)`;
+            overlay.style.opacity = 0;
+            box.textContent = "";
 
-    noBtn.addEventListener("mouseenter", () => {
+            // Stop music
+            music.pause();
+            music.currentTime = 0;
 
-        showToast();  // <-- notification
-
-        const maxX = box.clientWidth - noBtn.clientWidth;
-        const maxY = box.clientHeight - noBtn.clientHeight;
-
-        posX = Math.random() * maxX;
-        posY = Math.random() * maxY;
-
-        noBtn.style.transform = `translate(${posX}px, ${posY}px)`;
-    });
-
-    function showToast() {
-        const box = document.getElementById("box");
-
-        const note = document.createElement("div");
-        note.className = "toast";
-        note.innerText = "😂 Catch me if you can.";
-
-        box.appendChild(note);
-
-        setTimeout(() => note.remove(), 1600);
+        },1500);
     }
+}
+function showRosesAndButton(){
+
+    const overlay=document.getElementById("overlay");
+    const btn=document.getElementById("returnBtn");
+
+    // Roses burst
+    for(let i=0;i<20;i++){
+        let r=document.createElement("div");
+        r.className="rose";
+        r.innerHTML="🌹";
+        r.style.left=Math.random()*90+"vw";
+        r.style.top=Math.random()*80+"vh";
+        overlay.appendChild(r);
+    }
+
+    // Show button
+    setTimeout(()=>{
+        btn.classList.add("show");
+    },800);
+}
+
+document.getElementById("returnBtn").onclick=()=>{
+    const overlay=document.getElementById("overlay");
+    const music=document.getElementById("music");
+
+    overlay.style.opacity=0;
+
+    // cleanup
+    document.querySelectorAll(".rose").forEach(r=>r.remove());
+    document.getElementById("returnBtn").classList.remove("show");
+    document.getElementById("shayariBox").textContent="";
+
+    music.pause();
+    music.currentTime=0;
+};
 </script>
 
 </body>
